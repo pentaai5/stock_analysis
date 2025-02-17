@@ -44,7 +44,7 @@ class SMAStrategyTester(StrategyTester):
             if (len(df.index) == 1):
                 self.result = pd.concat([self.result, 
                         pd.DataFrame([[sma1,sma2, df.iloc[0][0], df.iloc[0][1]]], 
-                                    columns=["SMA1","SMA2","Window", "Strategy_returns", "daily_returns"])], 
+                                    columns=["SMA1", "SMA2", "Strategy_returns", "daily_returns"])], 
                         ignore_index=True)
 
 
