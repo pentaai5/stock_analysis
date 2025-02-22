@@ -70,7 +70,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
             # Clone the Python module from GitHub
-            git clone https://github.com/pentaai5/stock_analysis.git /home/ec2-user/pentaai5
+            #git clone https://github.com/pentaai5/stock_analysis.git /home/ec2-user/pentaai5
+            git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/pentaai5/stock_analysis.git /home/ec2-user/pentaai5
             
             # Change to the module directory
             cd /home/ec2-user/pentaai5
