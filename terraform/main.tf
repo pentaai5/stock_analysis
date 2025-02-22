@@ -13,7 +13,7 @@ data "aws_security_group" "existing_sg" {
 
 # Security Group allowing HTTP (8080) and SSH (22)
 resource "aws_security_group" "new_sg" {
-  count       = length(data.aws_security_group.web_sg.id) > 0 ? 0 : 1
+  count       = length(data.aws_security_group.existing_sg.id) > 0 ? 0 : 1
   name        = "web-security-group"
   description = "Allow HTTP on 8080 and SSH"
 
