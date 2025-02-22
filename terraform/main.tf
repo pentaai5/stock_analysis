@@ -10,6 +10,12 @@ data "aws_security_group" "existing_sg" {
   }
 }
 
+# Lookup existing key pair
+data "aws_key_pair" "existing_key" {
+  key_name = "deployer-key"
+}
+
+
 
 # Security Group allowing HTTP (8080) and SSH (22)
 resource "aws_security_group" "new_sg" {
@@ -53,12 +59,21 @@ resource "aws_key_pair" "deployer_key" {
 }
 
 
+# Create a new key pair ONLY if it does not exist
+resource "aws_key_pair" "deployer_key" {
+  count      = length(data.aws_key_pair.existing_key.id) > 0 ? 0 : 1
+  key_name   = "deployer-key"
+  public_key = var.ssh_public_key  # Use a Terraform variable for flexibility
+}
+
 # EC2 Instance
 resource "aws_instance" "web_server" {
   #ami             = "ami-0c55b159cbfafe1f0"
   ami             = "ami-05b10e08d247fb927"
   instance_type   = "t2.micro"
-  key_name        = aws_key_pair.deployer_key.key_name
+  #key_name        = aws_key_pair.deployer_key.key_name
+  key_name = length(data.aws_key_pair.existing_key.id) > 0 ? data.aws_key_pair.existing_key.id : aws_key_pair.deployer_key[0].key_name
+
   vpc_security_group_ids = [
     length(data.aws_security_group.existing_sg.id) > 0 ? data.aws_security_group.existing_sg.id : aws_security_group.new_sg[0].id
   ]
