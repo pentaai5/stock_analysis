@@ -53,10 +53,10 @@ resource "aws_security_group" "new_sg" {
 
 variable "ssh_public_key" {}
 
-resource "aws_key_pair" "deployer_key" {
-  key_name   = "deployer-key"
-  public_key = var.ssh_public_key
-}
+# resource "aws_key_pair" "deployer_key" {
+#   key_name   = "deployer-key"
+#   public_key = var.ssh_public_key
+# }
 
 
 # Create a new key pair ONLY if it does not exist
