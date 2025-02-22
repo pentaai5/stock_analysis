@@ -29,11 +29,11 @@ resource "aws_security_group" "web_sg" {
   }
 }
 
-# Key Pair
-resource "aws_key_pair" "deployer_key" {
-  key_name   = "deployer-key"
-  public_key = file("~/.ssh/id_rsa.pub")
-}
+# # Key Pair
+# resource "aws_key_pair" "deployer_key" {
+#   key_name   = "deployer-key"
+#   public_key = file("~/.ssh/id_rsa.pub")
+# }
 
 # EC2 Instance
 resource "aws_instance" "web_server" {
