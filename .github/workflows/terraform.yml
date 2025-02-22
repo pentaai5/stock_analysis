@@ -31,8 +31,12 @@ jobs:
         run: terraform init
         working-directory: terraform
 
-      - name: Terraform Plan
-        run: terraform plan
+      # - name: Terraform Plan
+      #   run: terraform plan
+      #   working-directory: terraform
+      
+      - name: Terraform Plan (Debug)
+        run: TF_LOG=DEBUG terraform plan -input=false -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}"
         working-directory: terraform
 
       # - name: Terraform Apply
