@@ -1,0 +1,44 @@
+name: Terraform AWS EC2 Deployment
+
+on:
+  push:
+    branches:
+      - main  # Runs when changes are pushed to main
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  terraform:
+    name: Deploy EC2 with Terraform
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: latest
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: terraform
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: terraform
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: terraform
+
+      - name: Output EC2 Public IP
+        run: terraform output public_ip
+        working-directory: terraform

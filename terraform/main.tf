@@ -37,7 +37,8 @@ resource "aws_key_pair" "deployer_key" {
 
 # EC2 Instance
 resource "aws_instance" "web_server" {
-  ami             = "ami-0c55b159cbfafe1f0"
+  #ami             = "ami-0c55b159cbfafe1f0"
+  ami             = "ami-05b10e08d247fb927"
   instance_type   = "t2.micro"
   key_name        = aws_key_pair.deployer_key.key_name
   security_groups = [aws_security_group.web_sg.name]
