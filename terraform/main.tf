@@ -6,7 +6,7 @@ provider "aws" {
 data "aws_security_group" "existing_sg" {
   filter {
     name   = "group-name"
-    values = ["web-security-group"]
+    values = ["web_sg"]
   }
 }
 
@@ -60,7 +60,7 @@ resource "aws_instance" "web_server" {
   instance_type   = "t2.micro"
   key_name        = aws_key_pair.deployer_key.key_name
   vpc_security_group_ids = [
-    length(data.aws_security_group.existing_sg.id) > 0 ? data.aws_security_group.existing_sg.id : aws_security_group.new_sg[0].id
+    length(data.aws_security_group.existing_sg.id) > 0 ? data.aws_security_group.existing_sg.id : aws_security_group.web_sg[0].id
   ]
   #security_groups = [aws_security_group.web_sg.name]
 
