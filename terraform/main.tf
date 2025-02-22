@@ -35,6 +35,14 @@ resource "aws_security_group" "web_sg" {
 #   public_key = file("~/.ssh/id_rsa.pub")
 # }
 
+variable "ssh_public_key" {}
+
+resource "aws_key_pair" "deployer_key" {
+  key_name   = "deployer-key"
+  public_key = var.ssh_public_key
+}
+
+
 # EC2 Instance
 resource "aws_instance" "web_server" {
   #ami             = "ami-0c55b159cbfafe1f0"
