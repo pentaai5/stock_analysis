@@ -42,3 +42,35 @@ jobs:
       - name: Output EC2 Public IP
         run: terraform output public_ip
         working-directory: terraform
+      
+      - name: Get EC2 Public IP
+        id: ec2-ip
+        run: echo "EC2_IP=$(terraform output -raw public_ip)" >> $GITHUB_ENV
+        working-directory: terraform
+
+      - name: Wait for EC2 SSH to be Ready
+        run: |
+          echo "Waiting for EC2 to be accessible..."
+          sleep 60  # Wait for EC2 to boot up
+
+      - name: Deploy Python Module to EC2
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ env.EC2_IP }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            # Clone the Python module from GitHub
+            git clone https://github.com/pentaai5/stock_analysis.git /home/ec2-user/pentaai5
+            
+            # Change to the module directory
+            cd /home/ec2-user/pentaai5
+            
+            # Install dependencies
+            pip3 install -r requirements.txt
+            
+            # Run the Python module (adjust based on your module)
+            python3 StrategyTester.py name='STOCK_TICKER' start='2024-01-01' end='2025-01-01' long_only='True/False'
+            
+            # For later run
+            #python BollingerBandTester.py name='6758.T' start='2024-01-01' end='2025-01-01' long_only='False'
