@@ -6,14 +6,14 @@ provider "aws" {
 data "aws_security_group" "existing_sg" {
   filter {
     name   = "group-name"
-    values = ["web_sg"]
+    values = ["web-security-group"]
   }
 }
 
 
 # Security Group allowing HTTP (8080) and SSH (22)
-resource "aws_security_group" "web_sg" {
-  count       = length(data.aws_security_group.existing_sg.id) > 0 ? 0 : 1
+resource "aws_security_group" "new_sg" {
+  count       = length(data.aws_security_group.web_sg.id) > 0 ? 0 : 1
   name        = "web-security-group"
   description = "Allow HTTP on 8080 and SSH"
 
@@ -60,7 +60,7 @@ resource "aws_instance" "web_server" {
   instance_type   = "t2.micro"
   key_name        = aws_key_pair.deployer_key.key_name
   vpc_security_group_ids = [
-    length(data.aws_security_group.existing_sg.id) > 0 ? data.aws_security_group.existing_sg.id : aws_security_group.web_sg[0].id
+    length(data.aws_security_group.existing_sg.id) > 0 ? data.aws_security_group.existing_sg.id : aws_security_group.new_sg[0].id
   ]
   #security_groups = [aws_security_group.web_sg.name]
 
