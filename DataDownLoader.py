@@ -10,7 +10,7 @@ class DataDownLoader :
     
     def download_data(self) :
         try:
-            data = yf.download(self.stock_, start=self.start_, end=self.end_)
+            data = yf.download(self.stock_, start=self.start_, end=self.end_, auto_adjust=False, multi_level_index=False)
             if data.empty:
                 raise ValueError(f"No data found for {self.stock_}")
             return data
