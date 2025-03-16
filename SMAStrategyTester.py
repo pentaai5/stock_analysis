@@ -15,8 +15,8 @@ class SMAStrategyTester(StrategyTester):
         
 
     def run_Strategy(self,SMA1,SMA2):
-        self.data["SMA1"] = self.data["Adj Close"].rolling(SMA1).mean()
-        self.data["SMA2"] = self.data["Adj Close"].rolling(SMA2).mean()
+        self.data["SMA1"] = self.data["Close"].rolling(SMA1).mean()
+        self.data["SMA2"] = self.data["Close"].rolling(SMA2).mean()
         self.data["position"] = np.where((self.data['SMA1'].shift(2) < self.data['SMA2'].shift(2)) &
                                         (self.data['SMA1'].shift(1) > self.data['SMA2'].shift(1)),1,
                             np.where((self.data['SMA1'].shift(2) > self.data['SMA2'].shift(2)) &
@@ -44,9 +44,8 @@ class SMAStrategyTester(StrategyTester):
             if (len(df.index) == 1):
                 self.result = pd.concat([self.result, 
                         pd.DataFrame([[sma1,sma2, df.iloc[0][0], df.iloc[0][1]]], 
-                                    columns=["SMA1", "SMA2", "Strategy_returns", "daily_returns"])], 
+                                    columns=["SMA1","SMA2", "Strategy_returns", "daily_returns"])], 
                         ignore_index=True)
-
 
 if __name__ == "__main__":
     s = SMAStrategyTester()
