@@ -15,10 +15,10 @@ class RSIStrategyTester(StrategyTester):
         
 
     def run_Strategy(self,window):
-        self.data["Gain"] = np.where(self.data["Adj Close"] - self.data["Adj Close"].shift(1) > 0 ,
-                                    self.data["Adj Close"] - self.data["Adj Close"].shift(1),0)
-        self.data["Loss"] = np.where(self.data["Adj Close"] - self.data["Adj Close"].shift(1) < 0 ,
-                                    self.data["Adj Close"].shift(1) - self.data["Adj Close"],0)
+        self.data["Gain"] = np.where(self.data["Close"] - self.data["Close"].shift(1) > 0 ,
+                                    self.data["Close"] - self.data["Close"].shift(1),0)
+        self.data["Loss"] = np.where(self.data["Close"] - self.data["Close"].shift(1) < 0 ,
+                                    self.data["Close"].shift(1) - self.data["Close"],0)
         self.data["Average_gain"] = self.data["Gain"].rolling(window).mean()
         self.data["Average_loss"] = self.data["Loss"].rolling(window).mean()
         self.data["MAR"] = self.data["Average_gain"] / self.data["Average_loss"]
