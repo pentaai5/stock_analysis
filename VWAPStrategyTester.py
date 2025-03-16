@@ -12,13 +12,11 @@ class VWAPStrategyTester(StrategyTester):
         self.strategy_name = "Rolling VWAP Strategy"
         
     def run_Strategy(self,window):
-        self.data["Adjustment_factor"] = self.data["Adj Close"]/self.data["Close"]
-        self.data["Adj_Volume"] = self.data["Volume"]/self.data["Adjustment_factor"]
-        self.data["Average_price"] = (self.data["Close"] + self.data["High"] + self.data["Low"])*self.data["Adjustment_factor"]/3
-        self.data["Weighted_Volume"] = self.data["Adj_Volume"]*self.data["Average_price"]
-        self.data["VWAP"] = self.data["Weighted_Volume"].rolling(window).sum()/self.data["Adj_Volume"].rolling(window).sum()
-        self.data["position"] = np.where( self.data["Adj Close"].shift(1) <= self.data["VWAP"].shift(1),1,
-                                        np.where(self.data["Adj Close"].shift(1) > self.data["VWAP"].shift(1),self.short,np.nan)
+        self.data["Average_price"] = (self.data["Close"] + self.data["High"] + self.data["Low"])/3
+        self.data["Weighted_Volume"] = self.data["Volume"]*self.data["Average_price"]
+        self.data["VWAP"] = self.data["Weighted_Volume"].rolling(window).sum()/self.data["Volume"].rolling(window).sum()
+        self.data["position"] = np.where( self.data["Close"].shift(1) <= self.data["VWAP"].shift(1),1,
+                                        np.where(self.data["Close"].shift(1) > self.data["VWAP"].shift(1),self.short,np.nan)
                                         )
         self.data["position"].ffill()
         self.data["Strategy_returns"]=self.data["daily_returns"]*self.data["position"]
@@ -26,7 +24,7 @@ class VWAPStrategyTester(StrategyTester):
     def plot_data_curve(self):
         fig = make_subplots(specs=[[{"secondary_y": True}]])
         fig.add_trace( go.Scatter(y=self.data["VWAP"],x=self.data.index,name="VWAP"),secondary_y=False)
-        fig.add_trace( go.Scatter(y=self.data["Adj Close"],x=self.data.index,name="Adj Close"),secondary_y=False)
+        fig.add_trace( go.Scatter(y=self.data["Close"],x=self.data.index,name="Close"),secondary_y=False)
         fig.add_trace( go.Scatter(y=self.data["position"],x=self.data.index,name="position"),secondary_y=True)
         fig.layout.update(title=self.strategy_name)
         fig.show(block=True)  
