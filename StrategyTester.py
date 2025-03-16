@@ -13,7 +13,7 @@ class StrategyTester:
         self.data=DataDownLoader(self.context["name"],self.context["start"],self.context["end"],"yahoo").download_data()
         if self.data is None:
             raise ValueError(f"Failed to download data for {self.context['name']}. Please check the stock ticker or data source.")
-        self.data["daily_returns"] = np.log(self.data["Adj Close"]/self.data["Adj Close"].shift(1))
+        self.data["daily_returns"] = np.log(self.data["Close"] / self.data["Close"].shift(1))
     
     def plot_performance_stats(self):
         fig = make_subplots(specs=[[{"secondary_y": True}]])
