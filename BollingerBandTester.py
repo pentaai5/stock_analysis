@@ -20,14 +20,14 @@ class BollingerBandTester (StrategyTester):
         self.short = 0 if self.context["long_only"] == "True" else -1
 
     def run_Strategy(self,window):
-        self.data["SMA"] = self.data["Adj Close"].rolling(window).mean()
-        self.data["STDDEV"] = self.data["Adj Close"].rolling(window).std()
+        self.data["SMA"] = self.data["Close"].rolling(window).mean()
+        self.data["STDDEV"] = self.data["Close"].rolling(window).std()
         self.data["LOWER"] = self.data["SMA"] - 2*self.data["STDDEV"]
         self.data["UPPER"] = self.data["SMA"] + 2*self.data["STDDEV"]
-        self.data["position"] = np.where( (self.data['Adj Close'].shift(2) > self.data['LOWER'].shift(2)) &
-                                        (self.data['Adj Close'].shift(1) < self.data['LOWER'].shift(1)),1,
-                            np.where((self.data['Adj Close'].shift(2) < self.data['UPPER'].shift(2)) &
-                                        (self.data['Adj Close'].shift(1) > self.data['UPPER'].shift(1)),self.short,np.nan
+        self.data["position"] = np.where( (self.data['Close'].shift(2) > self.data['LOWER'].shift(2)) &
+                                        (self.data['Close'].shift(1) < self.data['LOWER'].shift(1)),1,
+                            np.where((self.data['Close'].shift(2) < self.data['UPPER'].shift(2)) &
+                                        (self.data['Close'].shift(1) > self.data['UPPER'].shift(1)),self.short,np.nan
                                     ) 
                             )
         self.data["position"].ffill(inplace=True)
@@ -37,7 +37,7 @@ class BollingerBandTester (StrategyTester):
         fig = make_subplots(specs=[[{"secondary_y": True}]])
         fig.add_trace( go.Scatter(y=self.data["LOWER"],x=self.data.index,name="lower_band"),secondary_y=False)
         fig.add_trace( go.Scatter(y=self.data["UPPER"],x=self.data.index,name="upper_band"),secondary_y=False)
-        fig.add_trace( go.Scatter(y=self.data["Adj Close"],x=self.data.index,name="Adj Close"),secondary_y=False)
+        fig.add_trace( go.Scatter(y=self.data["Close"],x=self.data.index,name="Close"),secondary_y=False)
         fig.add_trace( go.Scatter(y=self.data["position"],x=self.data.index,name="position"),secondary_y=True)
         fig.layout.update(title=self.strategy_name)
         fig.show(block=True)
