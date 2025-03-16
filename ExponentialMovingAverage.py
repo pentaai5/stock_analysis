@@ -13,16 +13,16 @@ class ExponentialMovingAverageTester(StrategyTester):
         
 
     def run_Strategy(self,window):
-        self.data["EMA"] = self.data["Adj Close"].ewm(span=window,adjust=False).mean()
-        self.data["position"] = np.where( self.data["Adj Close"].shift(1) >= self.data["EMA"].shift(1),1,
-                                        np.where(self.data["Adj Close"].shift(1) < self.data["EMA"].shift(1),self.short,np.nan))
+        self.data["EMA"] = self.data["Close"].ewm(span=window,adjust=False).mean()
+        self.data["position"] = np.where( self.data["Close"].shift(1) >= self.data["EMA"].shift(1),1,
+                                        np.where(self.data["Close"].shift(1) < self.data["EMA"].shift(1),self.short,np.nan))
         self.data["position"].ffill(inplace=True)
         self.data["Strategy_returns"] = self.data["daily_returns"]*self.data["position"]
     
     def plot_data_curve(self):
         fig = make_subplots(specs=[[{"secondary_y": True}]])
         fig.add_trace( go.Scatter(y=self.data["EMA"],x=self.data.index,name="EMA"),secondary_y=False)
-        fig.add_trace( go.Scatter(y=self.data["Adj Close"],x=self.data.index,name="Adj Close"),secondary_y=False)
+        fig.add_trace( go.Scatter(y=self.data["Close"],x=self.data.index,name="Close"),secondary_y=False)
         fig.add_trace( go.Scatter(y=self.data["position"],x=self.data.index,name="position"),secondary_y=True)
         fig.show(block=True)
 
