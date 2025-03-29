@@ -41,7 +41,10 @@ jobs:
           echo "PUBLIC_KEY<<EOF" >> $GITHUB_ENV
           cat ~/.ssh/github-action-key.pub >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-          
+
+      - name: Debugging Private Key
+        run: echo "${{ env.PRIVATE_KEY }}"
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -89,20 +92,35 @@ jobs:
         with:
           host: ${{ env.EC2_IP }}
           username: ec2-user
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          key: ${{ env.PRIVATE_KEY }}  # Make sure PRIVATE_KEY is correctly passed here
           script: |
-            # Clone the Python module from GitHub
-            #git clone https://github.com/pentaai5/stock_analysis.git /home/ec2-user/pentaai5
             git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/pentaai5/stock_analysis.git /home/ec2-user/pentaai5
-            
-            # Change to the module directory
+            #git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/pentaai5/stock_analysis.git /home/ec2-user/pentaai5
+
             cd /home/ec2-user/pentaai5
-            
-            # Install dependencies
             pip3 install -r requirements.txt
-            
-            # Run the Python module (adjust based on your module)
             python3 StrategyTester.py name='STOCK_TICKER' start='2024-01-01' end='2025-01-01' long_only='True/False'
+
+
+      # - name: Deploy Python Module to EC2
+      #   uses: appleboy/ssh-action@v0.1.7
+      #   with:
+      #     host: ${{ env.EC2_IP }}
+      #     username: ec2-user
+      #     key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+      #     script: |
+      #       # Clone the Python module from GitHub
+      #       #git clone https://github.com/pentaai5/stock_analysis.git /home/ec2-user/pentaai5
+      #       git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/pentaai5/stock_analysis.git /home/ec2-user/pentaai5
             
-            # For later run
-            #python BollingerBandTester.py name='6758.T' start='2024-01-01' end='2025-01-01' long_only='False'
+      #       # Change to the module directory
+      #       cd /home/ec2-user/pentaai5
+            
+      #       # Install dependencies
+      #       pip3 install -r requirements.txt
+            
+      #       # Run the Python module (adjust based on your module)
+      #       python3 StrategyTester.py name='STOCK_TICKER' start='2024-01-01' end='2025-01-01' long_only='True/False'
+            
+      #       # For later run
+      #       #python BollingerBandTester.py name='6758.T' start='2024-01-01' end='2025-01-01' long_only='False'
