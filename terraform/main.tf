@@ -51,12 +51,17 @@ resource "aws_security_group" "new_sg" {
 #   public_key = file("~/.ssh/id_rsa.pub")
 # }
 
-variable "ssh_public_key" {}
+#variable "ssh_public_key" {}
 
 # resource "aws_key_pair" "deployer_key" {
 #   key_name   = "deployer-key"
 #   public_key = var.ssh_public_key
 # }
+
+variable "ssh_public_key" {
+  description = "SSH public key for the key pair"
+  type        = string
+}
 
 
 # Create a new key pair ONLY if it does not exist
@@ -72,7 +77,10 @@ resource "aws_instance" "web_server" {
   ami             = "ami-05b10e08d247fb927"
   instance_type   = "t2.micro"
   #key_name        = aws_key_pair.deployer_key.key_name
-  key_name = length(data.aws_key_pair.existing_key.id) > 0 ? data.aws_key_pair.existing_key.id : aws_key_pair.deployer_key[0].key_name
+  key_name      = aws_key_pair.deployer_key[0].key_name
+  #key_name = length(data.aws_key_pair.existing_key.id) > 0 ? data.aws_key_pair.existing_key.id : aws_key_pair.deployer_key[0].key_name
+  key_name = length(data.aws_key_pair.existing_key.key_name) > 0 ? data.aws_key_pair.existing_key.key_name : aws_key_pair.deployer_key[0].key_name
+  depends_on = [aws_key_pair.deployer_key]
 
   vpc_security_group_ids = [
     length(data.aws_security_group.existing_sg.id) > 0 ? data.aws_security_group.existing_sg.id : aws_security_group.new_sg[0].id
