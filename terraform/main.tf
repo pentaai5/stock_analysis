@@ -68,7 +68,9 @@ variable "ssh_public_key" {
 resource "aws_key_pair" "deployer_key" {
   count      = length(data.aws_key_pair.existing_key.id) > 0 ? 0 : 1
   key_name   = "deployer-key"
-  public_key = var.ssh_public_key  # Use a Terraform variable for flexibility
+  #public_key = var.ssh_public_key  # Use a Terraform variable for flexibility
+  public_key = var.EC2_SSH_PUBLIC_KEY  # Ensure this is passed correctly from GitHub Actions
+
 }
 
 # EC2 Instance
