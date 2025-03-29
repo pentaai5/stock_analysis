@@ -77,7 +77,7 @@ resource "aws_instance" "web_server" {
   ami             = "ami-05b10e08d247fb927"
   instance_type   = "t2.micro"
   #key_name        = aws_key_pair.deployer_key.key_name
-  key_name      = aws_key_pair.deployer_key[0].key_name
+  #key_name      = aws_key_pair.deployer_key[0].key_name
   #key_name = length(data.aws_key_pair.existing_key.id) > 0 ? data.aws_key_pair.existing_key.id : aws_key_pair.deployer_key[0].key_name
   key_name = length(data.aws_key_pair.existing_key.key_name) > 0 ? data.aws_key_pair.existing_key.key_name : aws_key_pair.deployer_key[0].key_name
   depends_on = [aws_key_pair.deployer_key]
