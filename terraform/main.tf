@@ -2,6 +2,12 @@ provider "aws" {
   region = "us-east-1"
 }
 
+variable "EC2_SSH_PUBLIC_KEY" {
+  description = "The public SSH key for EC2 instance"
+  type        = string
+}
+
+
 # Look up an existing security group by name
 data "aws_security_group" "existing_sg" {
   filter {
